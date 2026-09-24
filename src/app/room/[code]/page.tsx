@@ -26,7 +26,7 @@ import { CallAnnouncement } from '@/components/CallAnnouncement';
 import { WinnerModal } from '@/components/WinnerModal';
 import { RulesModal } from '@/components/RulesModal';
 import { sounds } from '@/lib/sounds';
-import { Sparkles, Users, Crown, Play, ExternalLink, AlertCircle } from 'lucide-react';
+import { Sparkles, Users, Crown, Play, AlertCircle } from 'lucide-react';
 
 interface RoomPageProps {
   params: Promise<{ code: string }>;
@@ -146,14 +146,6 @@ export default function RoomPage({ params }: RoomPageProps) {
       void leaveRoom(roomCode, currentPlayer.id);
     }
     router.push('/');
-  };
-
-  // Open second player in new tab for instant testing
-  const handleOpenTestPlayer = () => {
-    sounds.playClick();
-    const testNames = ['Rahul', 'Akhil', 'Karthik', 'Sneha', 'Pooja', 'Rohan'];
-    const randomName = testNames[Math.floor(Math.random() * testNames.length)];
-    window.open(`/join?code=${roomCode}`, '_blank');
   };
 
   // Loading state
@@ -300,15 +292,6 @@ export default function RoomPage({ params }: RoomPageProps) {
                 </h2>
               </div>
 
-              {/* Multi-Tab Simulation Quick Link */}
-              <button
-                onClick={handleOpenTestPlayer}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition-all hover:scale-105"
-                title="Opens a new tab to join as a second player"
-              >
-                <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Open Player 2 in New Tab</span>
-              </button>
             </div>
 
             {/* Players in Lobby */}

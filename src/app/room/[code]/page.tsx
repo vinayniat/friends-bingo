@@ -332,9 +332,6 @@ export default function RoomPage({ params }: RoomPageProps) {
                         <span className={`font-bold text-sm ${p.isOnline ? 'text-white' : 'text-slate-500'}`}>
                           {p.name}
                         </span>
-                        {!p.isOnline && (
-                          <span className="text-[10px] font-semibold text-slate-500">Left the room</span>
-                        )}
                       </div>
                     </div>
                     {p.isHost && (

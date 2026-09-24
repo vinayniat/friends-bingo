@@ -111,23 +111,29 @@ export function getPlayerSession(roomCode: string): { playerId: string; playerNa
 }
 
 /**
- * MARK PLAYER AS LEFT
+ * REMOVE PLAYER FROM ROOM
  */
 export async function leaveRoom(roomCode: string, playerId: string): Promise<RoomActionResult> {
   const cleanCode = roomCode.trim().toUpperCase();
   const room = getLocalRoomState(cleanCode);
   if (!room) return { success: false, error: 'Room not found.' };
 
-  const player = room.players.find((candidate) => candidate.id === playerId);
-  if (!player) return { success: false, error: 'Player not found in room.' };
+  const playerIndex = room.players.findIndex((candidate) => candidate.id === playerId);
+  if (playerIndex === -1) return { success: false, error: 'Player not found in room.' };
 
-  player.isOnline = false;
+  room.players.splice(playerIndex, 1);
+  if (room.currentTurnIndex >= room.players.length) {
+    room.currentTurnIndex = 0;
+  }
+  if (room.currentTurnPlayerId === playerId) {
+    room.currentTurnPlayerId = room.players[room.currentTurnIndex]?.id || '';
+  }
   saveRoomState(room);
 
   if (isSupabaseConfigured && supabase) {
     const { error } = await supabase
       .from('players')
-      .update({ is_online: false })
+      .delete()
       .eq('room_code', cleanCode)
       .eq('id', playerId);
 

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Copy, Check, Volume2, VolumeX, HelpCircle, Share2, Users, LogOut } from 'lucide-react';
+import { Copy, Check, Volume2, VolumeX, HelpCircle, Share2, Users, LogOut, Mic } from 'lucide-react';
 import { sounds } from '@/lib/sounds';
 
-interface RoomHeaderProps { roomCode: string; playerCount: number; playerName: string; isHost: boolean; onOpenRules: () => void; onLeaveRoom: () => void; }
+interface RoomHeaderProps { roomCode: string; playerCount: number; playerName: string; isHost: boolean; onOpenRules: () => void; onLeaveRoom: () => void; onOpenVoiceChat: () => void; }
 
-export const RoomHeader: React.FC<RoomHeaderProps> = ({ roomCode, playerCount, playerName, isHost, onOpenRules, onLeaveRoom }) => {
+export const RoomHeader: React.FC<RoomHeaderProps> = ({ roomCode, playerCount, playerName, isHost, onOpenRules, onLeaveRoom, onOpenVoiceChat }) => {
   const [copied, setCopied] = useState(false);
   const [isMuted, setIsMuted] = useState(sounds.getMuted());
   const copy = async (value: string) => { try { await navigator.clipboard.writeText(value); } finally { setCopied(true); setTimeout(() => setCopied(false), 1800); } };
@@ -23,6 +23,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = ({ roomCode, playerCount, p
           <span className="flex items-center gap-1 rounded-xl bg-indigo-50 px-2.5 py-2 text-sm font-bold text-[#6366F1]"><Users className="h-4 w-4" /> {playerCount}</span>
           <button onClick={share} className="hidden items-center gap-1 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-bold text-[#6366F1] sm:flex"><Share2 className="h-4 w-4" /> Share</button>
           <button onClick={() => { const muted = sounds.toggleMute(); setIsMuted(muted); }} className="rounded-xl border border-[#E2E8F0] bg-white p-2 text-[#64748B]">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4 text-[#22C55E]" />}</button>
+          <button onClick={onOpenVoiceChat} aria-label="Open voice chat" className="rounded-xl border border-indigo-100 bg-indigo-50 p-2 text-[#6366F1]"><Mic className="h-4 w-4" /></button>
           <button onClick={onOpenRules} className="rounded-xl border border-[#E2E8F0] bg-white p-2 text-[#F59E0B]"><HelpCircle className="h-4 w-4" /></button>
           <button onClick={onLeaveRoom} className="rounded-xl border border-rose-100 bg-rose-50 p-2 text-rose-500"><LogOut className="h-4 w-4" /></button>
         </div>

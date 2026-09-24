@@ -25,6 +25,7 @@ import { PlayerList } from '@/components/PlayerList';
 import { CallAnnouncement } from '@/components/CallAnnouncement';
 import { WinnerModal } from '@/components/WinnerModal';
 import { RulesModal } from '@/components/RulesModal';
+import { VoiceChatPanel } from '@/components/VoiceChatPanel';
 import { sounds } from '@/lib/sounds';
 import { Sparkles, Users, Crown, Play, AlertCircle } from 'lucide-react';
 
@@ -43,6 +44,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const [joinNameInput, setJoinNameInput] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showVoiceChat, setShowVoiceChat] = useState(false);
 
   // 1. Initial State Load & Reconnection
   useEffect(() => {
@@ -262,7 +264,9 @@ export default function RoomPage({ params }: RoomPageProps) {
         isHost={isHost}
         onOpenRules={() => setShowRules(true)}
         onLeaveRoom={handleReturnHome}
+        onOpenVoiceChat={() => setShowVoiceChat(true)}
       />
+      <VoiceChatPanel roomCode={room.roomCode} playerId={currentPlayer.id} playerName={currentPlayer.name} isOpen={showVoiceChat} onClose={() => setShowVoiceChat(false)} />
 
       {/* Floating Announcement banner */}
       <CallAnnouncement lastCalledBy={room.lastCalledBy} />

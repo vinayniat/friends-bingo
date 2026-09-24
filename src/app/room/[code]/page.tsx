@@ -163,10 +163,10 @@ export default function RoomPage({ params }: RoomPageProps) {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm font-bold text-slate-400">Connecting to Room {roomCode}...</span>
+          <span className="text-sm font-bold text-[#64748B]">Connecting to Room {roomCode}...</span>
         </div>
       </div>
     );
@@ -175,11 +175,11 @@ export default function RoomPage({ params }: RoomPageProps) {
   // Room not found
   if (!room) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl">
+      <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-3xl border border-[#E2E8F0] bg-white p-8 text-center shadow-xl shadow-slate-200/70">
           <AlertCircle className="w-12 h-12 text-rose-400 mx-auto mb-3" />
           <h2 className="text-2xl font-black mb-1">Room Not Found</h2>
-          <p className="text-xs text-slate-400 mb-6">
+          <p className="mb-6 text-xs text-[#64748B]">
             Room <span className="font-mono text-amber-400 font-bold">{roomCode}</span> does not exist or has expired.
           </p>
           <button
@@ -196,16 +196,16 @@ export default function RoomPage({ params }: RoomPageProps) {
   // Not yet joined this room
   if (!currentPlayer) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 blur-3xl pointer-events-none -z-10" />
-        <div className="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-indigo-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div className="w-full max-w-md rounded-3xl border border-[#E2E8F0] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
           <div className="flex items-center gap-3 mb-5">
             <span className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-white text-lg">
               B
             </span>
             <div>
-              <h2 className="text-xl font-black text-white">Join Room {roomCode}</h2>
-              <p className="text-xs text-slate-400">Enter your name to jump into the game</p>
+              <h2 className="text-xl font-black">Join Room {roomCode}</h2>
+              <p className="text-xs text-[#64748B]">Enter your name to jump into the game</p>
             </div>
           </div>
 
@@ -217,7 +217,7 @@ export default function RoomPage({ params }: RoomPageProps) {
 
           <form onSubmit={handleDirectJoin} className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5">
+              <label className="mb-1.5 block text-xs font-bold uppercase text-[#64748B]">
                 Your Nickname
               </label>
               <input
@@ -227,12 +227,12 @@ export default function RoomPage({ params }: RoomPageProps) {
                 value={joinNameInput}
                 onChange={(e) => setJoinNameInput(e.target.value)}
                 placeholder="e.g. Vinay"
-                className="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] px-4 py-3 text-sm font-bold focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-sm uppercase tracking-wider shadow-lg transition-all"
+              className="w-full rounded-2xl bg-[#6366F1] py-3.5 text-sm font-black uppercase tracking-wider text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-500"
             >
               Enter Game Room
             </button>
@@ -250,7 +250,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const onlinePlayerCount = room.players.filter((player) => player.isOnline).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between relative selection:bg-indigo-500 selection:text-white pb-8">
+    <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex flex-col justify-between relative selection:bg-indigo-100 selection:text-[#1E293B] pb-8">
       {/* Glow Backdrops */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-b from-indigo-600/15 via-purple-600/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
@@ -294,13 +294,13 @@ export default function RoomPage({ params }: RoomPageProps) {
       {/* STAGE 1: LOBBY */}
       {room.status === 'lobby' && (
         <main className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col items-center">
-          <div className="w-full bg-slate-900/90 backdrop-blur-xl border border-indigo-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-800">
+          <div className="w-full rounded-3xl border border-[#E2E8F0] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+            <div className="flex flex-col items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6 sm:flex-row">
               <div>
                 <span className="text-[11px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
                   Game Lobby
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                <h2 className="text-2xl font-black tracking-tight sm:text-3xl">
                   ROOM: <span className="font-mono text-amber-400">{room.roomCode}</span>
                 </h2>
               </div>
@@ -322,14 +322,14 @@ export default function RoomPage({ params }: RoomPageProps) {
                 {room.players.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/70 border border-slate-700/60"
+                    className="flex items-center justify-between rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] p-3"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-xl bg-slate-700 flex items-center justify-center font-bold text-white text-xs">
                         {p.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col">
-                        <span className={`font-bold text-sm ${p.isOnline ? 'text-white' : 'text-slate-500'}`}>
+                        <span className={`text-sm font-bold ${p.isOnline ? 'text-[#1E293B]' : 'text-slate-400'}`}>
                           {p.name}
                         </span>
                       </div>
@@ -351,7 +351,7 @@ export default function RoomPage({ params }: RoomPageProps) {
                   <button
                     onClick={handleHostStartSetup}
                     disabled={onlinePlayerCount < 2}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-indigo-600/30 transition-all hover:scale-102 active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#6366F1] py-4 text-sm font-black uppercase tracking-wider text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>START GAME</span>

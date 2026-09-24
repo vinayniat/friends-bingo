@@ -59,14 +59,14 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
   const sortedPlayers = [...players].sort((a, b) => b.linesCompleted - a.linesCompleted);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-2 border-amber-500/70 p-6 sm:p-8 shadow-2xl shadow-amber-500/30 text-center flex flex-col items-center max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="relative flex max-h-[92vh] w-full max-w-lg flex-col items-center overflow-y-auto rounded-3xl border-2 border-amber-300 bg-white p-6 text-center shadow-2xl shadow-amber-100 sm:p-8">
         {/* Glow backdrop */}
         <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500/20 via-pink-500/20 to-purple-500/20 blur-2xl -z-10 pointer-events-none" />
 
         {/* Big Trophy Badge */}
         <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center shadow-xl shadow-amber-500/40 mb-4 animate-bounce">
-          <Trophy className="w-10 h-10 text-slate-950 fill-slate-950" />
+          <Trophy className="h-10 w-10 fill-white text-white" />
         </div>
 
         {/* Title */}
@@ -76,10 +76,10 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
           <Sparkles className="w-3.5 h-3.5" />
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase">
+        <h2 className="text-3xl font-black uppercase tracking-tight text-[#1E293B] sm:text-4xl">
           {winnerPlayer?.name || 'Someone'} Wins!
         </h2>
-        <p className="text-sm font-semibold text-amber-400 mt-1">
+        <p className="mt-1 text-sm font-semibold text-[#F59E0B]">
           First to complete 5 unique lines!
         </p>
 
@@ -98,7 +98,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
 
         {/* Winning Player Lines Breakdown */}
         {winnerPlayer?.completedLines && winnerPlayer.completedLines.length > 0 && (
-          <div className="w-full bg-slate-800/60 rounded-2xl p-3 border border-slate-700/60 mb-5">
+          <div className="mb-5 w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] p-3">
             <span className="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
               Completed Lines Breakdown
             </span>
@@ -116,7 +116,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
         )}
 
         {/* Leaderboard */}
-        <div className="w-full bg-slate-800/40 rounded-2xl p-3.5 border border-slate-700/50 mb-6">
+        <div className="mb-6 w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] p-3.5">
           <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider block mb-2.5">
             Final Standings
           </span>
@@ -124,11 +124,11 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
             {sortedPlayers.map((p, idx) => (
               <div
                 key={p.id}
-                className="flex items-center justify-between p-2 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs font-semibold"
+                className="flex items-center justify-between rounded-xl border border-[#E2E8F0] bg-white p-2 text-xs font-semibold"
               >
                 <div className="flex items-center gap-2">
                   <span className="w-5 text-slate-400 font-bold">#{idx + 1}</span>
-                  <span className="text-white font-bold">{p.name}</span>
+                  <span className="font-bold text-[#1E293B]">{p.name}</span>
                   {idx === 0 && <Award className="w-3.5 h-3.5 text-amber-400" />}
                 </div>
                 <span className="text-amber-400 font-black">
@@ -163,7 +163,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
               sounds.playClick();
               onReturnHome();
             }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-sm border border-slate-700 transition-all hover:scale-105 active:scale-95"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E2E8F0] bg-white px-5 py-3 text-sm font-bold text-[#64748B] transition-all hover:border-indigo-200 hover:text-[#6366F1] sm:w-auto"
           >
             <Home className="w-4 h-4" />
             <span>Home</span>

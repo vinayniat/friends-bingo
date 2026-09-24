@@ -2,192 +2,87 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Sparkles, Users, Trophy, Play, ArrowRight, Grid3X3, Volume2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Grid3X3, Sparkles, Trophy, Users, Zap } from 'lucide-react';
 import { sounds } from '@/lib/sounds';
 import { RulesModal } from '@/components/RulesModal';
 
+const features = [
+  { icon: Trophy, title: '5 Lines to Win', text: 'Complete every letter in B-I-N-G-O.' },
+  { icon: Users, title: 'Multiplayer', text: 'Play together in one cheerful room.' },
+  { icon: Grid3X3, title: 'Numbers 1–25', text: 'Arrange your own winning board.' },
+  { icon: Zap, title: 'Real-time Game', text: 'Every call syncs instantly.' },
+];
+
 export default function HomePage() {
   const [showRules, setShowRules] = useState(false);
-
-  // Decorative preview board numbers
-  const previewCells = [
-    { num: 12, called: true, line: true },
-    { num: 5, called: true, line: true },
-    { num: 21, called: true, line: true },
-    { num: 3, called: true, line: true },
-    { num: 17, called: true, line: true }, // Row 1 complete!
-    { num: 8, called: false, line: false },
-    { num: 24, called: true, line: false },
-    { num: 1, called: false, line: false },
-    { num: 19, called: true, line: false },
-    { num: 10, called: false, line: false },
-    { num: 15, called: true, line: false },
-    { num: 7, called: true, line: false },
-    { num: 23, called: false, line: false },
-    { num: 11, called: false, line: false },
-    { num: 4, called: false, line: false },
-    { num: 20, called: false, line: false },
-    { num: 2, called: true, line: false },
-    { num: 14, called: false, line: false },
-    { num: 25, called: true, line: false },
-    { num: 6, called: false, line: false },
-    { num: 18, called: false, line: false },
-    { num: 9, called: false, line: false },
-    { num: 16, called: false, line: false },
-    { num: 13, called: true, line: false },
-    { num: 22, called: false, line: false },
-  ];
+  const preview = Array.from({ length: 25 }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between relative overflow-hidden">
-      {/* Background Neon Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-indigo-600/20 via-purple-600/10 to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-pink-600/10 blur-3xl pointer-events-none -z-10" />
-      <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-emerald-600/10 blur-3xl pointer-events-none -z-10" />
-
-      {/* Top Navbar */}
-      <header className="w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-indigo-500/30">
-            B
-          </span>
-          <span className="text-xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-            FRIENDS BINGO
-          </span>
-        </div>
-
-        <button
-          onClick={() => {
-            sounds.playClick();
-            setShowRules(true);
-          }}
-          className="px-4 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-xs font-bold text-slate-300 hover:text-white transition-all hover:scale-105 active:scale-95"
-        >
-          Game Rules
+    <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B]">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+        <Link href="/" className="flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#6366F1] text-2xl font-black text-white shadow-lg shadow-indigo-200">B</span>
+          <span className="text-lg font-black tracking-tight sm:text-xl">CLASS BINGO</span>
+        </Link>
+        <button onClick={() => { sounds.playClick(); setShowRules(true); }} className="rounded-xl border border-[#E2E8F0] bg-white px-4 py-2 text-sm font-bold text-[#64748B] shadow-sm transition hover:border-indigo-200 hover:text-[#6366F1]">
+          How to play
         </button>
       </header>
 
-      {/* Hero Section */}
-      <main className="w-full max-w-6xl mx-auto px-6 py-8 flex flex-col lg:flex-row items-center justify-between gap-12 my-auto">
-        {/* Left Column: Headline & CTA */}
-        <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold tracking-wider uppercase mb-5">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Real-Time Multiplayer Experience</span>
+      <main className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pb-12 pt-8 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:pt-16">
+        <section>
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-[#6366F1]">
+            <Sparkles className="h-4 w-4" /> Classroom challenge
           </div>
-
-          <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.08] text-white">
-            FRIENDS{' '}
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
-              BINGO
-            </span>
+          <h1 className="max-w-xl text-5xl font-black leading-[1.02] tracking-tight sm:text-7xl">
+            Your next <span className="text-[#6366F1]">BINGO</span> adventure starts here.
           </h1>
-
-          <p className="mt-3 text-xl sm:text-2xl font-bold text-amber-400 tracking-wide">
-            Arrange. Call. Complete. BINGO!
+          <p className="mt-5 max-w-lg text-lg leading-8 text-[#64748B]">
+            Arrange your numbers, complete 5 lines, cross B-I-N-G-O and win!
           </p>
-
-          <p className="mt-4 text-sm sm:text-base text-slate-400 leading-relaxed max-w-md">
-            Create a private room, arrange numbers 1–25 your way, and take turns calling numbers.
-            Complete five lines to spell <strong className="text-white">BINGO</strong> and take the crown!
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-3.5 mt-8 w-full sm:w-auto">
-            <Link
-              href="/create"
-              onClick={() => sounds.playClick()}
-              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-indigo-600/30 transition-all hover:scale-105 active:scale-95"
-            >
-              <Play className="w-4 h-4 fill-white" />
-              <span>Create Game</span>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link href="/create" onClick={() => sounds.playClick()} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#6366F1] px-7 py-4 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-500">
+              Play Bingo <ArrowRight className="h-4 w-4" />
             </Link>
-
-            <Link
-              href="/join"
-              onClick={() => sounds.playClick()}
-              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-slate-800/90 hover:bg-slate-750 text-white font-black text-sm uppercase tracking-wider border border-slate-700 shadow-md transition-all hover:scale-105 active:scale-95"
-            >
-              <Users className="w-4 h-4 text-indigo-400" />
-              <span>Join Game</span>
+            <Link href="/join" onClick={() => sounds.playClick()} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E2E8F0] bg-white px-7 py-4 text-sm font-black uppercase tracking-wide text-[#6366F1] shadow-sm transition hover:border-indigo-200">
+              Join a room
             </Link>
           </div>
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {features.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="rounded-2xl border border-[#E2E8F0] bg-white p-4 shadow-sm">
+                <Icon className="mb-3 h-5 w-5 text-[#F59E0B]" />
+                <p className="text-sm font-extrabold">{title}</p>
+                <p className="mt-1 text-xs leading-5 text-[#64748B]">{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Quick Perks */}
-          <div className="grid grid-cols-3 gap-3 mt-10 w-full pt-8 border-t border-slate-800/80">
-            <div className="flex flex-col items-center lg:items-start">
-              <span className="text-xl font-black text-white">1–25</span>
-              <span className="text-[11px] text-slate-400 font-medium">Custom Card</span>
+        <section className="rounded-[2rem] border border-[#E2E8F0] bg-white p-5 shadow-xl shadow-slate-200/70 sm:p-7">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-[#6366F1]">Live classroom</p>
+              <h2 className="mt-1 text-xl font-black">Arrange. Call. Complete.</h2>
             </div>
-            <div className="flex flex-col items-center lg:items-start">
-              <span className="text-xl font-black text-white">Turn-Based</span>
-              <span className="text-[11px] text-slate-400 font-medium">No Random Caller</span>
-            </div>
-            <div className="flex flex-col items-center lg:items-start">
-              <span className="text-xl font-black text-amber-400">5 Lines</span>
-              <span className="text-[11px] text-slate-400 font-medium">Spells B-I-N-G-O</span>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-[#22C55E]">Demo board</span>
+          </div>
+          <div className="mb-4 grid grid-cols-5 gap-2">
+            {preview.map((number, index) => (
+              <div key={number} className={`flex aspect-square items-center justify-center rounded-xl border text-base font-black sm:text-xl ${index < 5 ? 'border-amber-300 bg-amber-50 text-[#F59E0B]' : index % 3 === 0 ? 'border-emerald-200 bg-emerald-50 text-[#22C55E]' : 'border-[#E2E8F0] bg-[#F7F9FC] text-[#1E293B]'}`}>
+                {number}
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between rounded-2xl bg-indigo-50 px-4 py-3">
+            <span className="text-xs font-black uppercase tracking-wider text-[#64748B]">Progress</span>
+            <div className="flex gap-1.5">
+              {['B', 'I', 'N', 'G', 'O'].map((letter, i) => <span key={letter} className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-black ${i === 0 ? 'bg-[#F59E0B] text-white line-through' : 'bg-white text-[#94A3B8]'}`}>{letter}</span>)}
             </div>
           </div>
-        </div>
-
-        {/* Right Column: Animated Interactive Preview Board */}
-        <div className="flex-1 flex flex-col items-center justify-center relative">
-          <div className="relative p-4 rounded-3xl bg-slate-900/90 border border-indigo-500/30 shadow-2xl shadow-indigo-950/60 backdrop-blur-xl max-w-[380px] w-full">
-            {/* Header info */}
-            <div className="flex items-center justify-between mb-3 px-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs font-extrabold uppercase text-slate-300">Live Demo Board</span>
-              </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                1 / 5 Lines
-              </span>
-            </div>
-
-            {/* 5x5 Preview Board */}
-            <div className="grid grid-cols-5 gap-1.5 aspect-square w-full">
-              {previewCells.map((cell, idx) => (
-                <div
-                  key={idx}
-                  className={`flex flex-col items-center justify-center rounded-xl font-black text-base select-none transition-all duration-300 aspect-square ${
-                    cell.line
-                      ? 'bg-amber-500/30 border-2 border-amber-400 text-amber-200 shadow-md shadow-amber-500/20 scale-105'
-                      : cell.called
-                      ? 'bg-emerald-950/60 border border-emerald-500/50 text-emerald-300'
-                      : 'bg-slate-800/90 border border-slate-700/60 text-slate-300'
-                  }`}
-                >
-                  <span className={cell.called ? 'line-through decoration-emerald-400' : ''}>
-                    {cell.num}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* B-I-N-G-O progress demo */}
-            <div className="mt-3.5 pt-3 border-t border-slate-800 flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Progress:
-              </span>
-              <div className="flex gap-1.5 font-black text-sm">
-                <span className="px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 line-through">B</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">I</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">N</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">G</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">O</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#22C55E]"><CheckCircle2 className="h-5 w-5" /> One line complete!</div>
+        </section>
       </main>
-
-      {/* Footer */}
-      <footer className="w-full max-w-6xl mx-auto px-6 py-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-        <span>FRIENDS BINGO — Custom Multiplayer Game</span>
-        <span>Built for friends &amp; family</span>
-      </footer>
-
-      {/* Rules Modal */}
       <RulesModal isOpen={showRules} onClose={() => setShowRules(false)} />
     </div>
   );

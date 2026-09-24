@@ -139,13 +139,13 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
       {/* Setup Mode Action Toolbar */}
       {mode === 'setup' && (
         <div className="w-full max-w-md mb-4 flex flex-col gap-2.5">
-          <div className="flex items-center justify-between bg-slate-900/60 backdrop-blur-sm border border-slate-800 p-2 rounded-2xl">
+          <div className="flex items-center justify-between rounded-2xl border border-[#E2E8F0] bg-white p-2 shadow-sm">
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleShuffleCard}
                 disabled={isReady}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white border border-slate-700 disabled:opacity-50 transition-all hover:scale-105"
+                className="flex items-center gap-1 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-[#6366F1] transition-all hover:bg-indigo-100 disabled:opacity-50"
               >
                 <Shuffle className="w-3.5 h-3.5" />
                 <span>Shuffle</span>
@@ -154,7 +154,7 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
                 type="button"
                 onClick={handleResetCard}
                 disabled={isReady}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 disabled:opacity-50 transition-all hover:scale-105"
+                className="flex items-center gap-1 rounded-xl border border-[#E2E8F0] bg-[#F7F9FC] px-3 py-1.5 text-xs font-semibold text-[#64748B] transition-all hover:bg-white disabled:opacity-50"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>1–25 Order</span>
@@ -176,8 +176,8 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
                 disabled={!isReady && !cardValidation.isValid}
                 className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md ${
                   isReady
-                    ? 'bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-emerald-500/30'
-                    : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white shadow-indigo-500/30'
+                    ? 'bg-[#22C55E] text-white shadow-emerald-100'
+                    : 'bg-[#6366F1] text-white shadow-indigo-100'
                 }`}
               >
                 {isReady ? (
@@ -197,11 +197,11 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
 
           <p className="text-center text-xs text-slate-400">
             {isReady ? (
-              <span className="text-emerald-400 font-semibold flex items-center justify-center gap-1">
+              <span className="text-[#22C55E] font-semibold flex items-center justify-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Card locked! Waiting for all players to be ready...
               </span>
             ) : selectedIdx !== null ? (
-              <span className="text-amber-300 font-medium">
+              <span className="text-[#F59E0B] font-medium">
                 Tap another tile to swap with #{card[selectedIdx]}
               </span>
             ) : (
@@ -212,9 +212,9 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
       )}
 
       {/* 5x5 BINGO GRID */}
-      <div className="relative p-2.5 sm:p-4 rounded-3xl bg-gradient-to-b from-slate-800/80 via-slate-900/90 to-slate-950 border border-slate-700/60 shadow-2xl shadow-indigo-950/30">
+      <div className="relative rounded-3xl border border-[#E2E8F0] bg-white p-2.5 shadow-xl shadow-slate-200/70 sm:p-4">
         {/* Board glow effect */}
-        <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 blur-xl -z-10 pointer-events-none" />
+        <div className="absolute -inset-1 rounded-3xl bg-indigo-100/60 blur-xl -z-10 pointer-events-none" />
 
         <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5 max-w-[420px] w-[86vw] sm:w-[380px] md:w-[400px] aspect-square">
           {card.map((num, idx) => {
@@ -242,10 +242,10 @@ export const BingoBoard: React.FC<BingoBoardProps> = ({
                     : isSelected
                     ? 'ring-4 ring-indigo-400 bg-indigo-600/50 scale-105 shadow-lg shadow-indigo-500/40 animate-pulse'
                     : isCompletedCell
-                    ? 'bg-gradient-to-br from-amber-500/30 via-emerald-500/30 to-teal-500/40 border-2 border-amber-400/90 text-amber-200 shadow-lg shadow-amber-500/20'
+                    ? 'bg-amber-50 border-2 border-amber-300 text-[#F59E0B] shadow-sm'
                     : isCalled
-                    ? 'bg-emerald-950/60 border border-emerald-500/60 text-emerald-300 shadow-md shadow-emerald-950/40'
-                    : 'bg-slate-800/90 hover:bg-slate-750 border border-slate-700/80 text-white shadow-sm hover:border-slate-600 active:scale-95'
+                    ?                     'bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-sm'
+                    : 'bg-white hover:bg-indigo-50 border border-[#E2E8F0] text-[#1E293B] shadow-sm hover:border-indigo-200 active:scale-95'
                 } ${isLatest ? 'ring-4 ring-pink-500 scale-105 shadow-pink-500/50 animate-bounce' : ''}`}
               >
                 {/* Number */}

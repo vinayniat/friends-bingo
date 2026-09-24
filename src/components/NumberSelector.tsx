@@ -36,8 +36,8 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({
     <div
       className={`w-full rounded-3xl p-4 transition-all duration-300 ${
         isMyTurn
-          ? 'bg-gradient-to-b from-indigo-950/70 via-slate-900/90 to-slate-950 border-2 border-indigo-500/80 shadow-2xl shadow-indigo-500/20'
-          : 'bg-slate-900/60 backdrop-blur-md border border-slate-800'
+          ? 'bg-indigo-50 border-2 border-indigo-200 shadow-lg shadow-indigo-100'
+          : 'bg-white border border-[#E2E8F0] shadow-sm'
       }`}
     >
       {/* Header Banner */}
@@ -50,16 +50,16 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({
             </span>
             <div className="flex items-center gap-1.5">
               <Flame className="w-4 h-4 text-pink-400" />
-              <span className="text-sm font-black tracking-wide text-white uppercase">
+              <span className="text-sm font-black tracking-wide text-[#6366F1] uppercase">
                 YOUR TURN — Pick a Number!
               </span>
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-slate-400">
+          <div className="flex items-center gap-2 text-[#64748B]">
             <Clock className="w-4 h-4 animate-spin text-slate-500" />
             <span className="text-xs font-semibold">
-              Waiting for <strong className="text-amber-300">{currentTurnPlayerName}</strong> to call...
+            Waiting for <strong className="text-[#F59E0B]">{currentTurnPlayerName}</strong> to call...
             </span>
           </div>
         )}
@@ -82,10 +82,10 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({
               onClick={() => handleSelectNumber(num)}
               className={`relative py-2 sm:py-2.5 rounded-xl font-black text-sm sm:text-base transition-all duration-150 select-none ${
                 isCalled
-                  ? 'bg-slate-800/40 text-slate-600 border border-slate-800/60 cursor-not-allowed opacity-40 line-through'
+                  ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60 line-through'
                   : isMyTurn
-                  ? 'bg-gradient-to-b from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-md shadow-indigo-600/30 hover:scale-105 active:scale-95 border border-indigo-400/50 cursor-pointer'
-                  : 'bg-slate-800/80 text-slate-400 border border-slate-700/60 cursor-not-allowed'
+                  ? 'bg-[#6366F1] hover:bg-indigo-500 text-white shadow-md shadow-indigo-100 hover:scale-105 active:scale-95 border border-indigo-400 cursor-pointer'
+                  : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
               }`}
             >
               <span>{num}</span>

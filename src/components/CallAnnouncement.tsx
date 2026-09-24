@@ -31,7 +31,7 @@ export const CallAnnouncement: React.FC<CallAnnouncementProps> = ({ lastCalledBy
 
   return (
     <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-in fade-in slide-in-from-top-6 duration-300">
-      <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-900/95 via-indigo-900/95 to-pink-900/95 border-2 border-pink-500/80 shadow-2xl shadow-pink-500/40 backdrop-blur-md">
+      <div className="flex items-center gap-3 rounded-2xl border-2 border-pink-200 bg-white px-5 py-3 shadow-xl shadow-pink-100">
         <div className="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-400 flex items-center justify-center text-pink-300">
           <Megaphone className="w-5 h-5 animate-bounce" />
         </div>
@@ -40,7 +40,7 @@ export const CallAnnouncement: React.FC<CallAnnouncementProps> = ({ lastCalledBy
             {currentCall.playerName} CALLED
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-white tracking-tight drop-shadow-md">
+            <span className="text-3xl font-black tracking-tight text-[#EC4899]">
               {currentCall.number}
             </span>
           </div>

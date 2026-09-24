@@ -57,26 +57,26 @@ function JoinGameContent() {
   };
 
   return (
-    <div className="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-indigo-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-indigo-950/40">
+    <div className="w-full max-w-md rounded-3xl border border-[#E2E8F0] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-500 to-pink-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-purple-500/30">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EC4899] text-xl font-black text-white shadow-lg shadow-pink-200">
           <Users className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Join a Game</h1>
-          <p className="text-xs text-slate-400 font-medium">Enter room code and choose your nickname</p>
+          <h1 className="text-2xl font-black tracking-tight">Join a Game</h1>
+          <p className="text-xs font-medium text-[#64748B]">Enter room code and choose your nickname</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-5 p-3 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs font-semibold animate-in fade-in">
+        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-600">
           {error}
         </div>
       )}
 
       <form onSubmit={handleJoin} className="flex flex-col gap-4">
         <div>
-          <label htmlFor="code-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+          <label htmlFor="code-input" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#64748B]">
             Room Code
           </label>
           <div className="relative">
@@ -88,13 +88,13 @@ function JoinGameContent() {
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
               placeholder="e.g. 482731"
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700/80 text-amber-300 font-mono font-black text-base tracking-widest placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all uppercase"
+              className="w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] py-3 pl-10 pr-4 font-mono text-base font-black uppercase tracking-widest text-[#F59E0B] placeholder-slate-400 transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="name-input" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+          <label htmlFor="name-input" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#64748B]">
             Your Name / Nickname
           </label>
           <div className="relative">
@@ -106,7 +106,7 @@ function JoinGameContent() {
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               placeholder="e.g. Rahul"
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700/80 text-white font-bold text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              className="w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] py-3 pl-10 pr-4 text-sm font-bold text-[#1E293B] placeholder-slate-400 transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
             />
           </div>
         </div>
@@ -114,7 +114,7 @@ function JoinGameContent() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-2 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-purple-600/30 transition-all hover:scale-102 active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#6366F1] py-3.5 text-sm font-black uppercase tracking-wider text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-500 disabled:opacity-50"
         >
           {loading ? (
             <span className="animate-spin text-sm">Connecting...</span>
@@ -129,23 +129,23 @@ function JoinGameContent() {
 
 export default function JoinGamePage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-center items-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-purple-600/20 via-indigo-600/20 to-pink-600/10 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-100/60 blur-3xl pointer-events-none -z-10" />
 
       {/* Back button */}
       <div className="w-full max-w-md mb-6">
         <Link
           href="/"
           onClick={() => sounds.playClick()}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#64748B] hover:text-[#6366F1] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>
         </Link>
       </div>
 
-      <Suspense fallback={<div className="text-white text-sm">Loading join screen...</div>}>
+      <Suspense fallback={<div className="text-[#64748B] text-sm">Loading join screen...</div>}>
         <JoinGameContent />
       </Suspense>
     </div>

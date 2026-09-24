@@ -257,7 +257,7 @@ export default function RoomPage({ params }: RoomPageProps) {
       {/* Global Header */}
       <RoomHeader
         roomCode={room.roomCode}
-        playerCount={room.players.length}
+        playerCount={room.players.filter((player) => player.isOnline).length}
         playerName={currentPlayer.name}
         isHost={isHost}
         onOpenRules={() => setShowRules(true)}

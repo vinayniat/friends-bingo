@@ -138,7 +138,16 @@ export async function leaveRoom(roomCode: string, playerId: string): Promise<Roo
     remainingPlayer.hasWon = true;
   }
 
-  saveRoomState(room);
+  const shouldDeleteCompletedRoom = room.status === 'ended' && room.players.length === 0;
+  if (shouldDeleteCompletedRoom) {
+    memoryRooms.delete(cleanCode);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_PREFIX + cleanCode);
+      sessionStorage.removeItem(PLAYER_SESSION_PREFIX + cleanCode);
+    }
+  } else {
+    saveRoomState(room);
+  }
 
   if (isSupabaseConfigured && supabase) {
     const { error: playerDeleteError } = await supabase
@@ -151,7 +160,16 @@ export async function leaveRoom(roomCode: string, playerId: string): Promise<Roo
       console.warn('Supabase leave delete notice:', playerDeleteError);
     }
 
-    if (room.status === 'ended' && room.winnerId && room.winnerName) {
+    if (shouldDeleteCompletedRoom) {
+      const { error: roomDeleteError } = await supabase
+        .from('rooms')
+        .delete()
+        .eq('room_code', cleanCode);
+
+      if (roomDeleteError) {
+        console.warn('Supabase completed room cleanup notice:', roomDeleteError);
+      }
+    } else if (room.status === 'ended' && room.winnerId && room.winnerName) {
       const { error: roomUpdateError } = await supabase
         .from('rooms')
         .update({

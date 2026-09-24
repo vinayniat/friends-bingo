@@ -6,6 +6,7 @@ import {
   getLocalRoomState,
   getPlayerSession,
   savePlayerSession,
+  leaveRoom,
   subscribeToRoom,
   joinRoom,
   startCardSetup,
@@ -141,6 +142,9 @@ export default function RoomPage({ params }: RoomPageProps) {
 
   const handleReturnHome = () => {
     sounds.playClick();
+    if (currentPlayer) {
+      void leaveRoom(roomCode, currentPlayer.id);
+    }
     router.push('/');
   };
 
@@ -328,7 +332,14 @@ export default function RoomPage({ params }: RoomPageProps) {
                       <div className="w-8 h-8 rounded-xl bg-slate-700 flex items-center justify-center font-bold text-white text-xs">
                         {p.name.charAt(0).toUpperCase()}
                       </div>
-                      <span className="font-bold text-sm text-white">{p.name}</span>
+                      <div className="flex flex-col">
+                        <span className={`font-bold text-sm ${p.isOnline ? 'text-white' : 'text-slate-500'}`}>
+                          {p.name}
+                        </span>
+                        {!p.isOnline && (
+                          <span className="text-[10px] font-semibold text-slate-500">Left the room</span>
+                        )}
+                      </div>
                     </div>
                     {p.isHost && (
                       <span className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/30">

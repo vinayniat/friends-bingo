@@ -407,8 +407,9 @@ export function setPlayerReady(roomCode: string, playerId: string, isReady: bool
   player.isReady = isReady;
 
   // Check if ALL players are ready!
-  const allReady = room.players.every((p) => p.isReady);
-  if (allReady && room.players.length >= 2) {
+  const onlinePlayers = room.players.filter((player) => player.isOnline);
+  const allReady = onlinePlayers.length >= 2 && onlinePlayers.every((player) => player.isReady);
+  if (allReady) {
     room.status = 'playing';
     room.calledNumbers = [];
     room.lastCalledBy = undefined;

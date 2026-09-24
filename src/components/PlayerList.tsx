@@ -19,11 +19,13 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   gameStatus,
   myPlayerId,
 }) => {
+  const onlinePlayerCount = players.filter((player) => player.isOnline).length;
+
   return (
     <div className="w-full bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-4 shadow-xl">
       <div className="flex items-center justify-between mb-3 px-1">
         <span className="text-xs uppercase font-extrabold tracking-wider text-slate-400">
-          Players ({players.length})
+          Players ({onlinePlayerCount})
         </span>
         <span className="text-[11px] font-semibold text-slate-500">
           {gameStatus === 'lobby'

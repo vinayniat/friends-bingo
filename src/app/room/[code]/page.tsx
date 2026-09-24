@@ -235,6 +235,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const currentTurnPlayer = room.players.find((p) => p.id === room.currentTurnPlayerId);
   const winnerPlayer = room.players.find((p) => p.id === room.winnerId);
   const latestCalledNumber = room.calledNumbers.length > 0 ? room.calledNumbers[room.calledNumbers.length - 1] : undefined;
+  const onlinePlayerCount = room.players.filter((player) => player.isOnline).length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between relative selection:bg-indigo-500 selection:text-white pb-8">
@@ -298,10 +299,10 @@ export default function RoomPage({ params }: RoomPageProps) {
             <div className="my-6">
               <div className="flex items-center justify-between mb-3 px-1">
                 <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">
-                  Players ({room.players.length} / 8)
+                  Players ({onlinePlayerCount} / 8)
                 </span>
                 <span className="text-xs font-semibold text-slate-500">
-                  {room.players.length < 2 ? 'Need 2+ players' : 'Ready to start'}
+                {onlinePlayerCount < 2 ? 'Need 2+ players' : 'Ready to start'}
                 </span>
               </div>
 
@@ -340,13 +341,13 @@ export default function RoomPage({ params }: RoomPageProps) {
                 <div className="w-full max-w-sm flex flex-col items-center gap-2.5">
                   <button
                     onClick={handleHostStartSetup}
-                    disabled={room.players.length < 2}
+                    disabled={onlinePlayerCount < 2}
                     className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-indigo-600/30 transition-all hover:scale-102 active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>START GAME</span>
                   </button>
-                  {room.players.length < 2 && (
+                  {onlinePlayerCount < 2 && (
                     <p className="text-xs text-amber-400/90 font-medium">
                       At least 2 players must join the room before you can start.
                     </p>

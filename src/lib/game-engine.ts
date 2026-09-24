@@ -339,7 +339,8 @@ export function startCardSetup(roomCode: string, hostPlayerId: string): RoomActi
     return { success: false, error: 'Only the host can start the game.' };
   }
 
-  if (room.players.length < 2) {
+  const onlinePlayers = room.players.filter((player) => player.isOnline);
+  if (onlinePlayers.length < 2) {
     return { success: false, error: 'At least 2 players are required to start Friends Bingo.' };
   }
 

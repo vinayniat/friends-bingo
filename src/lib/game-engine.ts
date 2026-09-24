@@ -128,17 +128,42 @@ export async function leaveRoom(roomCode: string, playerId: string): Promise<Roo
   if (room.currentTurnPlayerId === playerId) {
     room.currentTurnPlayerId = room.players[room.currentTurnIndex]?.id || '';
   }
+
+  // A player leaving an active two-player match gives the remaining player the win.
+  if (room.status === 'playing' && room.players.length === 1) {
+    const remainingPlayer = room.players[0];
+    room.status = 'ended';
+    room.winnerId = remainingPlayer.id;
+    room.winnerName = remainingPlayer.name;
+    remainingPlayer.hasWon = true;
+  }
+
   saveRoomState(room);
 
   if (isSupabaseConfigured && supabase) {
-    const { error } = await supabase
+    const { error: playerDeleteError } = await supabase
       .from('players')
       .delete()
       .eq('room_code', cleanCode)
       .eq('id', playerId);
 
-    if (error) {
-      console.warn('Supabase leave update notice:', error);
+    if (playerDeleteError) {
+      console.warn('Supabase leave delete notice:', playerDeleteError);
+    }
+
+    if (room.status === 'ended' && room.winnerId && room.winnerName) {
+      const { error: roomUpdateError } = await supabase
+        .from('rooms')
+        .update({
+          status: 'ended',
+          winner_id: room.winnerId,
+          winner_name: room.winnerName,
+        })
+        .eq('room_code', cleanCode);
+
+      if (roomUpdateError) {
+        console.warn('Supabase forfeit update notice:', roomUpdateError);
+      }
     }
   }
 

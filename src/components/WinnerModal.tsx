@@ -23,6 +23,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
   onReturnHome,
 }) => {
   const lineMetaMap = new Map(ALL_LINES.map((l) => [l.id, l]));
+  const isForfeitWin = Boolean(winnerPlayer && winnerPlayer.linesCompleted < 5);
 
   useEffect(() => {
     // Play celebratory sound
@@ -80,7 +81,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
           {winnerPlayer?.name || 'Someone'} Wins!
         </h2>
         <p className="mt-1 text-sm font-semibold text-[#F59E0B]">
-          First to complete 5 unique lines!
+          {isForfeitWin ? 'The last player standing wins!' : 'First to complete 5 unique lines!'}
         </p>
 
         {/* Crossed B-I-N-G-O letters */}
@@ -97,7 +98,7 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
         </div>
 
         {/* Winning Player Lines Breakdown */}
-        {winnerPlayer?.completedLines && winnerPlayer.completedLines.length > 0 && (
+        {!isForfeitWin && winnerPlayer?.completedLines && winnerPlayer.completedLines.length > 0 && (
           <div className="mb-5 w-full rounded-2xl border border-[#E2E8F0] bg-[#F7F9FC] p-3">
             <span className="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
               Completed Lines Breakdown

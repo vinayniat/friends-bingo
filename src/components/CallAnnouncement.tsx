@@ -30,17 +30,17 @@ export const CallAnnouncement: React.FC<CallAnnouncementProps> = ({ lastCalledBy
   if (!visible || !currentCall) return null;
 
   return (
-    <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-in fade-in slide-in-from-top-6 duration-300">
-      <div className="flex items-center gap-3 rounded-2xl border-2 border-pink-200 bg-white px-5 py-3 shadow-xl shadow-pink-100">
-        <div className="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-400 flex items-center justify-center text-pink-300">
-          <Megaphone className="w-5 h-5 animate-bounce" />
+    <div className="relative z-10 flex w-full justify-center px-4 pt-3 animate-in fade-in slide-in-from-top-2 duration-200">
+      <div className="flex max-w-full items-center gap-3 rounded-2xl border border-pink-200 bg-white px-4 py-2.5 shadow-md shadow-pink-100 sm:px-5 sm:py-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-pink-200 bg-pink-50 text-[#EC4899] sm:h-10 sm:w-10">
+          <Megaphone className="h-5 w-5" />
         </div>
-        <div>
-          <p className="text-xs uppercase font-extrabold tracking-wider text-pink-300">
+        <div className="min-w-0">
+          <p className="truncate text-xs font-extrabold uppercase tracking-wider text-[#EC4899]">
             {currentCall.playerName} CALLED
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black tracking-tight text-[#EC4899]">
+            <span className="text-2xl font-black tracking-tight text-[#EC4899] sm:text-3xl">
               {currentCall.number}
             </span>
           </div>

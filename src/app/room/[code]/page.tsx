@@ -78,18 +78,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     };
   }, [roomCode]);
 
-  // Mark the player offline when the tab/window is closed.
-  useEffect(() => {
-    if (!currentPlayer) return;
-
-    const handleBeforeUnload = () => {
-      void leaveRoom(roomCode, currentPlayer.id);
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [roomCode, currentPlayer]);
-
   // Join if not yet connected
   const handleDirectJoin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   getLocalRoomState,
   loadRoomState,
@@ -28,7 +29,7 @@ import { WinnerModal } from '@/components/WinnerModal';
 import { RulesModal } from '@/components/RulesModal';
 import { VoiceChatPanel } from '@/components/VoiceChatPanel';
 import { sounds } from '@/lib/sounds';
-import { Sparkles, Users, Crown, Play, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Sparkles, Users, Crown, Play, AlertCircle } from 'lucide-react';
 
 interface RoomPageProps {
   params: Promise<{ code: string }>;
@@ -208,7 +209,16 @@ export default function RoomPage({ params }: RoomPageProps) {
     return (
       <div className="min-h-screen bg-[#F7F9FC] text-[#1E293B] flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 blur-3xl pointer-events-none -z-10" />
-        <div className="w-full max-w-md rounded-3xl border border-[#E2E8F0] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+        <div className="w-full max-w-md">
+          <Link
+            href="/"
+            onClick={() => sounds.playClick()}
+            className="mb-4 inline-flex min-h-10 items-center gap-2 rounded-xl px-3 text-sm font-bold text-[#64748B] transition hover:bg-white hover:text-[#6366F1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+          <div className="rounded-3xl border border-[#E2E8F0] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
           <div className="flex items-center gap-3 mb-5">
             <span className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-white text-lg">
               B
@@ -247,6 +257,7 @@ export default function RoomPage({ params }: RoomPageProps) {
               Enter Game Room
             </button>
           </form>
+          </div>
         </div>
       </div>
     );

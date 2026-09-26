@@ -18,7 +18,7 @@ export function VoiceChatPanel({ roomCode, playerId, playerName, isOpen, onClose
   if (!isOpen) return null;
   const closePanel = () => { voice.leave(); onClose(); };
   return (
-    <aside className="fixed right-4 top-20 z-50 w-[min(calc(100vw-2rem),22rem)] rounded-2xl border border-indigo-100 bg-white p-4 text-slate-800 shadow-xl" aria-label="Voice chat">
+    <aside className="fixed inset-x-0 bottom-0 z-50 w-full rounded-t-3xl border border-indigo-100 bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-slate-800 shadow-2xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-20 sm:w-[min(calc(100vw-2rem),22rem)] sm:rounded-2xl sm:p-4" aria-label="Voice chat">
       <div className="mb-3 flex items-center justify-between">
         <div><h2 className="font-black">Voice chat</h2><p className="text-xs text-slate-500">{voice.joined ? `${voice.participants.length + 1} in room` : 'Join to talk with players'}</p></div>
         <button onClick={closePanel} aria-label="Close voice chat" className="rounded-lg p-1 text-slate-500 hover:bg-slate-100">×</button>

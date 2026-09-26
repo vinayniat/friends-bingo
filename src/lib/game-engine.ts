@@ -22,6 +22,108 @@ export interface RoomActionResult<T = RoomState> {
 
 // In-memory cache for fast sync
 const memoryRooms = new Map<string, RoomState>();
+const persistenceQueues = new Map<string, Promise<void>>();
+
+function cacheRoomState(room: RoomState) {
+  memoryRooms.set(room.roomCode, room);
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(STORAGE_PREFIX + room.roomCode, JSON.stringify(room));
+    } catch (e) {
+      console.error('Failed saving room to localStorage', e);
+    }
+  }
+}
+
+function queueRoomPersistence(room: RoomState) {
+  if (!supabase || !isSupabaseConfigured) return;
+
+  const snapshot = structuredClone(room);
+  const previous = persistenceQueues.get(room.roomCode) || Promise.resolve();
+  const next = previous
+    .catch((error) => console.error('Previous room persistence failed:', error))
+    .then(async () => {
+      const { error: roomError } = await supabase!
+        .from('rooms')
+        .update({
+          status: snapshot.status,
+          current_turn_player_id: snapshot.currentTurnPlayerId,
+          current_turn_index: snapshot.currentTurnIndex,
+          called_numbers: snapshot.calledNumbers,
+          last_called_by: snapshot.lastCalledBy || null,
+          winner_id: snapshot.winnerId || null,
+          winner_name: snapshot.winnerName || null,
+          round: snapshot.round,
+          updated_at: new Date(snapshot.updatedAt).toISOString(),
+        })
+        .eq('room_code', snapshot.roomCode);
+
+      if (roomError) {
+        console.error('Failed persisting room state to Supabase:', roomError);
+        return;
+      }
+
+      const results = await Promise.all(snapshot.players.map((player) =>
+        supabase!
+          .from('players')
+          .update({
+            name: player.name,
+            is_host: player.isHost,
+            is_ready: player.isReady,
+            turn_order: player.turnOrder,
+            lines_completed: player.linesCompleted,
+            completed_lines: player.completedLines,
+            has_won: player.hasWon,
+            card: player.card,
+            is_online: player.isOnline,
+          })
+          .eq('room_code', snapshot.roomCode)
+          .eq('id', player.id)
+      ));
+      results.forEach(({ error }) => {
+        if (error) console.error('Failed persisting player state to Supabase:', error);
+      });
+    })
+    .catch((error) => console.error('Unexpected room persistence failure:', error));
+
+  persistenceQueues.set(room.roomCode, next);
+  void next.finally(() => {
+    if (persistenceQueues.get(room.roomCode) === next) {
+      persistenceQueues.delete(room.roomCode);
+    }
+  });
+}
+
+function mapDatabaseRoom(dbRoom: Record<string, unknown>, dbPlayers: Record<string, unknown>[]): RoomState {
+  return {
+    id: String(dbRoom.id),
+    roomCode: String(dbRoom.room_code),
+    hostId: String(dbRoom.host_id),
+    status: dbRoom.status as GameStatus,
+    currentTurnPlayerId: String(dbRoom.current_turn_player_id || ''),
+    currentTurnIndex: Number(dbRoom.current_turn_index || 0),
+    calledNumbers: (dbRoom.called_numbers as number[] | null) || [],
+    lastCalledBy: (dbRoom.last_called_by as RoomState['lastCalledBy']) || undefined,
+    winnerId: (dbRoom.winner_id as string | null) || undefined,
+    winnerName: (dbRoom.winner_name as string | null) || undefined,
+    players: dbPlayers.map((player) => ({
+      id: String(player.id),
+      name: String(player.name),
+      isHost: Boolean(player.is_host),
+      isReady: Boolean(player.is_ready),
+      turnOrder: Number(player.turn_order || 0),
+      joinedAt: player.joined_at ? new Date(String(player.joined_at)).getTime() : Date.now(),
+      linesCompleted: Number(player.lines_completed || 0),
+      completedLines: (player.completed_lines as LineId[] | null) || [],
+      hasWon: Boolean(player.has_won),
+      card: (player.card as number[] | null) || createDefaultCard(),
+      isOnline: Boolean(player.is_online),
+    })).sort((a, b) => a.turnOrder - b.turnOrder),
+    createdAt: dbRoom.created_at ? new Date(String(dbRoom.created_at)).getTime() : Date.now(),
+    updatedAt: dbRoom.updated_at ? new Date(String(dbRoom.updated_at)).getTime() : 0,
+    round: Number(dbRoom.round || 1),
+  };
+}
 
 /**
  * Load room from storage or memory
@@ -49,38 +151,71 @@ export function getLocalRoomState(roomCode: string): RoomState | null {
  * Save room to storage and broadcast
  */
 export function saveRoomState(room: RoomState, broadcast = true) {
-  room.updatedAt = Date.now();
-  memoryRooms.set(room.roomCode, room);
+  if (broadcast) room.updatedAt = Math.max(Date.now(), room.updatedAt + 1);
+  cacheRoomState(room);
+  if (!broadcast) return;
 
   if (typeof window !== 'undefined') {
+    // 1. BroadcastChannel for local cross-tab sync
     try {
-      localStorage.setItem(STORAGE_PREFIX + room.roomCode, JSON.stringify(room));
-    } catch (e) {
-      console.error('Failed saving room to localStorage', e);
+      const bc = new BroadcastChannel(`bingo_room_${room.roomCode}`);
+      bc.postMessage({ type: 'ROOM_UPDATE', room });
+      bc.close();
+    } catch {
+      // Fallback for older browsers
+    }
+  }
+
+  // Persist current game state so a refresh restores the latest card, calls, and caller.
+  queueRoomPersistence(room);
+
+  // 2. Supabase Realtime broadcast if configured
+  if (isSupabaseConfigured && supabase) {
+    supabase
+      .channel(`room:${room.roomCode}`)
+      .send({
+        type: 'broadcast',
+        event: 'state_change',
+        payload: room,
+      })
+      .catch((err) => console.warn('Supabase broadcast failed:', err));
+  }
+}
+
+export async function loadRoomState(roomCode: string): Promise<RoomState | null> {
+  const cleanCode = roomCode.trim().toUpperCase();
+  const localRoom = getLocalRoomState(cleanCode);
+  if (!isSupabaseConfigured || !supabase) return localRoom;
+
+  try {
+    const { data: dbRoom, error: roomError } = await supabase
+      .from('rooms')
+      .select('*')
+      .eq('room_code', cleanCode)
+      .single();
+
+    if (roomError) {
+      if (roomError.code !== 'PGRST116') console.error('Failed loading room from Supabase:', roomError);
+      return localRoom;
     }
 
-    if (broadcast) {
-      // 1. BroadcastChannel for local cross-tab sync
-      try {
-        const bc = new BroadcastChannel(`bingo_room_${room.roomCode}`);
-        bc.postMessage({ type: 'ROOM_UPDATE', room });
-        bc.close();
-      } catch {
-        // Fallback for older browsers
-      }
+    const { data: dbPlayers, error: playersError } = await supabase
+      .from('players')
+      .select('*')
+      .eq('room_code', cleanCode);
 
-      // 2. Supabase Realtime broadcast if configured
-      if (isSupabaseConfigured && supabase) {
-        supabase
-          .channel(`room:${room.roomCode}`)
-          .send({
-            type: 'broadcast',
-            event: 'state_change',
-            payload: room,
-          })
-          .catch((err) => console.warn('Supabase broadcast failed:', err));
-      }
+    if (playersError) {
+      console.error('Failed loading room players from Supabase:', playersError);
+      return localRoom;
     }
+
+    const remoteRoom = mapDatabaseRoom(dbRoom as Record<string, unknown>, (dbPlayers || []) as Record<string, unknown>[]);
+    const latestRoom = !localRoom || remoteRoom.updatedAt >= localRoom.updatedAt ? remoteRoom : localRoom;
+    cacheRoomState(latestRoom);
+    return latestRoom;
+  } catch (error) {
+    console.error('Unexpected error loading room from Supabase:', error);
+    return localRoom;
   }
 }
 
@@ -281,34 +416,10 @@ export async function joinRoom(
       const { data: dbRoom } = await supabase.from('rooms').select('*').eq('room_code', cleanCode).single();
       if (dbRoom) {
         const { data: dbPlayers } = await supabase.from('players').select('*').eq('room_code', cleanCode);
-        room = {
-          id: dbRoom.id,
-          roomCode: dbRoom.room_code,
-          hostId: dbRoom.host_id,
-          status: dbRoom.status as GameStatus,
-          currentTurnPlayerId: dbRoom.current_turn_player_id,
-          currentTurnIndex: dbRoom.current_turn_index,
-          calledNumbers: dbRoom.called_numbers || [],
-          lastCalledBy: dbRoom.last_called_by,
-          winnerId: dbRoom.winner_id,
-          winnerName: dbRoom.winner_name,
-          players: (dbPlayers || []).map((p) => ({
-            id: p.id,
-            name: p.name,
-            isHost: p.is_host,
-            isReady: p.is_ready,
-            turnOrder: p.turn_order,
-            joinedAt: new Date(p.joined_at).getTime(),
-            linesCompleted: p.lines_completed,
-            completedLines: (p.completed_lines || []) as LineId[],
-            hasWon: p.has_won,
-            card: p.card || createDefaultCard(),
-            isOnline: p.is_online,
-          })),
-          createdAt: new Date(dbRoom.created_at).getTime(),
-          updatedAt: new Date(dbRoom.updated_at).getTime(),
-          round: dbRoom.round || 1,
-        };
+        room = mapDatabaseRoom(
+          dbRoom as Record<string, unknown>,
+          (dbPlayers || []) as Record<string, unknown>[]
+        );
         saveRoomState(room, false);
       }
     } catch (e) {
@@ -562,6 +673,12 @@ export function playAgain(roomCode: string, hostPlayerId: string): RoomActionRes
  * Realtime Subscription Listener
  */
 export function subscribeToRoom(roomCode: string, onUpdate: (room: RoomState) => void): () => void {
+  const applyUpdate = (room: RoomState) => {
+    const current = getLocalRoomState(roomCode);
+    if (current && room.updatedAt < current.updatedAt) return;
+    cacheRoomState(room);
+    onUpdate(room);
+  };
   let bc: BroadcastChannel | null = null;
 
   // Local BroadcastChannel listener
@@ -569,8 +686,7 @@ export function subscribeToRoom(roomCode: string, onUpdate: (room: RoomState) =>
     bc = new BroadcastChannel(`bingo_room_${roomCode}`);
     bc.onmessage = (event) => {
       if (event.data?.type === 'ROOM_UPDATE' && event.data.room) {
-        memoryRooms.set(roomCode, event.data.room);
-        onUpdate(event.data.room);
+        applyUpdate(event.data.room);
       }
     };
   } catch (err) {
@@ -582,8 +698,7 @@ export function subscribeToRoom(roomCode: string, onUpdate: (room: RoomState) =>
     if (e.key === STORAGE_PREFIX + roomCode && e.newValue) {
       try {
         const parsed = JSON.parse(e.newValue);
-        memoryRooms.set(roomCode, parsed);
-        onUpdate(parsed);
+        applyUpdate(parsed);
       } catch (err) {
         console.error('Storage parse error', err);
       }
@@ -602,8 +717,7 @@ export function subscribeToRoom(roomCode: string, onUpdate: (room: RoomState) =>
       .on('broadcast', { event: 'state_change' }, (payload) => {
         if (payload?.payload) {
           const room = payload.payload as RoomState;
-          memoryRooms.set(roomCode, room);
-          onUpdate(room);
+          applyUpdate(room);
         }
       })
       .subscribe();

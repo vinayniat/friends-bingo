@@ -4,6 +4,7 @@ import React, { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   getLocalRoomState,
+  loadRoomState,
   getPlayerSession,
   savePlayerSession,
   leaveRoom,
@@ -61,11 +62,12 @@ export default function RoomPage({ params }: RoomPageProps) {
         }
       }
     }
-    setLoading(false);
-
-    // Subscribe to real-time updates
+    let active = true;
     const unsubscribe = subscribeToRoom(roomCode, (updatedRoom) => {
-      setRoom(updatedRoom);
+      setRoom((current) => {
+        if (current && current.updatedAt > updatedRoom.updatedAt) return current;
+        return updatedRoom;
+      });
       // Synchronize current player
       setCurrentPlayer((prev) => {
         if (!prev) return null;
@@ -73,7 +75,25 @@ export default function RoomPage({ params }: RoomPageProps) {
       });
     });
 
+    void loadRoomState(roomCode).then((loadedRoom) => {
+      if (!active) return;
+      const cachedRoom = getLocalRoomState(roomCode);
+      const latestRoom = cachedRoom && loadedRoom && cachedRoom.updatedAt > loadedRoom.updatedAt
+        ? cachedRoom
+        : loadedRoom || cachedRoom;
+      if (latestRoom) {
+        setRoom(latestRoom);
+        const session = getPlayerSession(roomCode);
+        if (session) {
+          const restoredPlayer = latestRoom.players.find((player) => player.id === session.playerId);
+          if (restoredPlayer) setCurrentPlayer(restoredPlayer);
+        }
+      }
+      setLoading(false);
+    });
+
     return () => {
+      active = false;
       unsubscribe();
     };
   }, [roomCode]);
@@ -237,6 +257,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const currentTurnPlayer = room.players.find((p) => p.id === room.currentTurnPlayerId);
   const winnerPlayer = room.players.find((p) => p.id === room.winnerId);
   const latestCalledNumber = room.calledNumbers.length > 0 ? room.calledNumbers[room.calledNumbers.length - 1] : undefined;
+  const lastCaller = room.players.find((player) => player.id === room.lastCalledBy?.playerId);
   const onlinePlayerCount = room.players.filter((player) => player.isOnline).length;
 
   return (
@@ -257,7 +278,12 @@ export default function RoomPage({ params }: RoomPageProps) {
       <VoiceChatPanel roomCode={room.roomCode} playerId={currentPlayer.id} playerName={currentPlayer.name} isOpen={showVoiceChat} onClose={() => setShowVoiceChat(false)} />
 
       {/* Floating Announcement banner */}
-      <CallAnnouncement lastCalledBy={room.lastCalledBy} />
+      <CallAnnouncement
+        lastCalledBy={room.lastCalledBy && {
+          ...room.lastCalledBy,
+          playerName: lastCaller?.name || room.lastCalledBy.playerName,
+        }}
+      />
 
       {/* Winner Celebration Modal */}
       {room.status === 'ended' && (

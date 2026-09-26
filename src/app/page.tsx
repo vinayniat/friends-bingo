@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Grid3X3, Sparkles, Trophy, Users, Zap } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Grid3X3, Mic, Sparkles, Trophy, Users, Zap } from 'lucide-react';
 import { sounds } from '@/lib/sounds';
 import { RulesModal } from '@/components/RulesModal';
 
@@ -47,6 +47,10 @@ export default function HomePage() {
             <Link href="/join" onClick={() => sounds.playClick()} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E2E8F0] bg-white px-7 py-4 text-sm font-black uppercase tracking-wide text-[#6366F1] shadow-sm transition hover:border-indigo-200">
               Join a room
             </Link>
+          </div>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2.5 text-sm font-semibold text-[#64748B] shadow-sm">
+            <Mic className="h-4 w-4 shrink-0 text-[#6366F1]" />
+            <span>Chat with your friends using built-in voice chat while you play.</span>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {features.map(({ icon: Icon, title, text }) => (
